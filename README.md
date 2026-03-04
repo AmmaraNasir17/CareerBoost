@@ -1,4 +1,4 @@
-# **CareerBoost – Smart Career & Recruitment Portal**
+# **CareerBoost**
 
 ---
 
