@@ -1,20 +1,16 @@
-import { useLanguage } from '../context/LanguageContext.jsx'
-
 export default function Sidebar({ currentRole = 'applier', isMobileOpen = false, onClose = () => {} }) {
-  const { t } = useLanguage()
-
   const applierMenuItems = [
-    { label: t.sidebar.applier.dashboard, icon: '🏠', active: true },
-    { label: t.sidebar.applier.applications, icon: '📋', active: false },
-    { label: t.sidebar.applier.savedJobs, icon: '🔖', active: false },
-    { label: t.sidebar.applier.messages, icon: '💬', active: false },
+    { label: 'Dashboard', icon: '🏠', active: true },
+    { label: 'Applications', icon: '📋', active: false },
+    { label: 'Saved Jobs', icon: '🔖', active: false },
+    { label: 'Messages', icon: '💬', active: false },
   ]
 
   const recruiterMenuItems = [
-    { label: t.sidebar.recruiter.dashboard, icon: '📊', active: true },
-    { label: t.sidebar.recruiter.postJob, icon: '📝', active: false },
-    { label: t.sidebar.recruiter.applicants, icon: '📥', active: false },
-    { label: t.sidebar.recruiter.team, icon: '👥', active: false },
+    { label: 'Dashboard', icon: '📊', active: true },
+    { label: 'Post Job', icon: '📝', active: false },
+    { label: 'Applicants', icon: '📥', active: false },
+    { label: 'Team', icon: '👥', active: false },
   ]
 
   const menuItems = currentRole === 'recruiter' ? recruiterMenuItems : applierMenuItems
@@ -52,7 +48,7 @@ export default function Sidebar({ currentRole = 'applier', isMobileOpen = false,
             </div>
           </div>
           <button className="w-full px-4 py-2 text-xs font-semibold text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors">
-            {t.sidebar.signOut}
+            Sign Out
           </button>
         </div>
       </aside>
@@ -90,7 +86,7 @@ export default function Sidebar({ currentRole = 'applier', isMobileOpen = false,
 
           <div className="p-4 border-t border-gray-200 bg-gray-50">
             <button className="w-full px-4 py-2 text-xs font-semibold text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors">
-              {t.sidebar.signOut}
+              Sign Out
             </button>
           </div>
         </div>

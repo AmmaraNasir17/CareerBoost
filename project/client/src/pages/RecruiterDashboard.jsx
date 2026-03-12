@@ -3,8 +3,6 @@ import Navbar from '../components/Navbar'
 import Sidebar from '../components/Sidebar'
 import StatsCard from '../components/StatsCard'
 import { BriefcaseIcon, UsersIcon, CheckCircleIcon } from '../components/Icons'
-import { useLanguage } from '../context/LanguageContext.jsx'
-import { interpolate } from '../App'
 
 const postedJobs = [
   { id: 1, title: 'Senior React Developer', applicants: 24, posted: '2024-02-10', status: 'Active' },
@@ -32,7 +30,6 @@ function getRatingStars(rating) {
 
 export default function RecruiterDashboard() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const { t } = useLanguage()
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -44,16 +41,16 @@ export default function RecruiterDashboard() {
           {/* Welcome Section */}
           <div className="mb-6 md:mb-8">
             <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
-              {interpolate(t.recruiterDashboard.welcome, { name: 'Sarah' })}
+              Welcome back, Sarah! 👋
             </h1>
-            <p className="text-sm md:text-base text-gray-600">{t.recruiterDashboard.manage}</p>
+            <p className="text-sm md:text-base text-gray-600">Manage your job postings and review applicants</p>
           </div>
 
           {/* Stats Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-6 md:mb-8">
-            <StatsCard icon={BriefcaseIcon} label={t.recruiterDashboard.activeJobs} value="5" color="blue" trend={{ positive: true, value: 20 }} />
-            <StatsCard icon={UsersIcon} label={t.recruiterDashboard.totalApplicants} value="100" color="teal" trend={{ positive: true, value: 15 }} />
-            <StatsCard icon={CheckCircleIcon} label={t.recruiterDashboard.shortlistedCandidates} value="28" color="green" trend={{ positive: true, value: 5 }} />
+            <StatsCard icon={BriefcaseIcon} label="Active Jobs" value="5" color="blue" trend={{ positive: true, value: 20 }} />
+            <StatsCard icon={UsersIcon} label="Total Applicants" value="100" color="teal" trend={{ positive: true, value: 15 }} />
+            <StatsCard icon={CheckCircleIcon} label="Shortlisted Candidates" value="28" color="green" trend={{ positive: true, value: 5 }} />
           </div>
 
           {/* Main Content Grid */}
@@ -63,11 +60,11 @@ export default function RecruiterDashboard() {
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                 <div className="px-4 md:px-6 py-4 md:py-6 border-b border-gray-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                   <div>
-                    <h2 className="text-base md:text-lg font-bold text-gray-900">{t.recruiterDashboard.postedJobs}</h2>
-                    <p className="text-xs md:text-sm text-gray-600 mt-1">{t.recruiterDashboard.postedJobsDesc}</p>
+                    <h2 className="text-base md:text-lg font-bold text-gray-900">Posted Jobs</h2>
+                    <p className="text-xs md:text-sm text-gray-600 mt-1">Your active job listings</p>
                   </div>
                   <button className="px-4 py-2 bg-blue-600 text-white text-xs md:text-sm font-semibold rounded-lg hover:bg-blue-700 transition-colors whitespace-nowrap">
-                    {t.recruiterDashboard.postJobBtn}
+                    + Post Job
                   </button>
                 </div>
 
@@ -80,9 +77,9 @@ export default function RecruiterDashboard() {
                             <h3 className="text-sm font-semibold text-gray-900 truncate">{job.title}</h3>
                             <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mt-2">
                               <span className="inline-flex items-center gap-1 text-xs text-gray-600">
-                                <UsersIcon className="w-4 h-4" /> {job.applicants} {t.recruiterDashboard.applicants}
+                                <UsersIcon className="w-4 h-4" /> {job.applicants} Applicants
                               </span>
-                              <span className="text-xs text-gray-500">{interpolate(t.recruiterDashboard.postedDate, { date: job.posted })}</span>
+                              <span className="text-xs text-gray-500">Posted {job.posted}</span>
                             </div>
                           </div>
                           <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 sm:flex-shrink-0">
@@ -91,10 +88,10 @@ export default function RecruiterDashboard() {
                                 ? 'bg-green-50 text-green-600 border border-green-100'
                                 : 'bg-gray-100 text-gray-600 border border-gray-200'
                             }`}>
-                              {job.status === 'Active' ? t.recruiterDashboard.active : t.recruiterDashboard.closed}
+                              {job.status}
                             </span>
                             <button className="text-xs text-blue-600 hover:text-blue-700 font-semibold">
-                              {t.recruiterDashboard.view}
+                              View
                             </button>
                           </div>
                         </div>
@@ -108,11 +105,11 @@ export default function RecruiterDashboard() {
             {/* Quick Stats */}
             <div className="space-y-4 md:space-y-6">
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6">
-                <h3 className="text-sm font-bold text-gray-900 mb-4">{t.recruiterDashboard.hiringProgress}</h3>
+                <h3 className="text-sm font-bold text-gray-900 mb-4">Hiring Progress</h3>
                 <div className="space-y-4">
                   <div>
                     <div className="flex justify-between items-center mb-2">
-                      <span className="text-xs font-medium text-gray-600">{t.recruiterDashboard.thisWeek}</span>
+                      <span className="text-xs font-medium text-gray-600">This Week</span>
                       <span className="text-sm font-bold text-gray-900">8</span>
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2">
@@ -121,7 +118,7 @@ export default function RecruiterDashboard() {
                   </div>
                   <div>
                     <div className="flex justify-between items-center mb-2">
-                      <span className="text-xs font-medium text-gray-600">{t.recruiterDashboard.thisMonth}</span>
+                      <span className="text-xs font-medium text-gray-600">This Month</span>
                       <span className="text-sm font-bold text-gray-900">28</span>
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2">
@@ -132,7 +129,7 @@ export default function RecruiterDashboard() {
               </div>
 
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6">
-                <h3 className="text-sm font-bold text-gray-900 mb-4">{t.recruiterDashboard.topPositions}</h3>
+                <h3 className="text-sm font-bold text-gray-900 mb-4">Top Positions</h3>
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <span className="text-xs text-gray-700 font-medium">React Developer</span>
@@ -154,8 +151,8 @@ export default function RecruiterDashboard() {
           {/* Recent Applicants */}
           <div className="mt-6 md:mt-8 bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
             <div className="px-4 md:px-6 py-4 md:py-6 border-b border-gray-200">
-              <h2 className="text-base md:text-lg font-bold text-gray-900">{t.recruiterDashboard.recentApplicants}</h2>
-              <p className="text-xs md:text-sm text-gray-600 mt-1">{t.recruiterDashboard.recentApplicantsDesc}</p>
+              <h2 className="text-base md:text-lg font-bold text-gray-900">Recent Applicants</h2>
+              <p className="text-xs md:text-sm text-gray-600 mt-1">Latest submissions across your job postings</p>
             </div>
 
             <div className="divide-y divide-gray-200">
@@ -178,7 +175,7 @@ export default function RecruiterDashboard() {
                         {getRatingStars(applicant.rating)}
                       </div>
                       <button className="px-3 py-2 text-xs font-semibold bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors whitespace-nowrap">
-                        {t.recruiterDashboard.review}
+                        Review
                       </button>
                     </div>
                   </div>

@@ -6,7 +6,6 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import LandingPage from './pages/LandingPage'
 import ProtectedRoute from './components/ProtectedRoute'
-import { interpolate } from './translations/i18n'
 
 function App() {
   return (
@@ -21,8 +20,5 @@ function App() {
     </Router>
   )
 }
-
-// eslint-disable-next-line react-refresh/only-export-components
-export { interpolate }
 
 export default App

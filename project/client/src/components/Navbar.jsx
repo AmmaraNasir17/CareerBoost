@@ -1,10 +1,8 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useLanguage } from '../context/LanguageContext.jsx'
 
 export default function Navbar({ userName = 'User', userRole = 'Applier', onMenuClick = () => {} }) {
   const navigate = useNavigate()
-  const { t, language, setLanguage } = useLanguage()
   const [showProfile, setShowProfile] = useState(false)
 
   return (
@@ -37,29 +35,13 @@ export default function Navbar({ userName = 'User', userRole = 'Applier', onMenu
         <div className="hidden md:flex flex-1 max-w-xs">
           <input
             type="text"
-            placeholder={t.navbar.searchPlaceholder}
+            placeholder="Search jobs, companies..."
             className="w-full px-4 py-2 rounded-lg bg-gray-50 border border-gray-200 text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
           />
         </div>
 
         {/* Right Section - Profile & Language */}
         <div className="flex items-center gap-2 md:gap-3 ml-auto flex-shrink-0">
-          {/* Language Selector */}
-          <select
-            value={language}
-            onChange={(e) => setLanguage(e.target.value)}
-            className="hidden sm:block px-2.5 py-1.5 text-xs md:text-sm border border-gray-200 rounded-lg bg-white hover:border-gray-300 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="en">EN</option>
-            <option value="es">ES</option>
-            <option value="fr">FR</option>
-            <option value="de">DE</option>
-            <option value="it">IT</option>
-            <option value="pt">PT</option>
-            <option value="ja">JA</option>
-            <option value="zh">ZH</option>
-          </select>
-
           <div className="hidden sm:flex items-center gap-2 px-2 md:px-3 py-1.5 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">
             <div className="w-7 h-7 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-xs flex-shrink-0">
               {userName.charAt(0)}
@@ -79,10 +61,10 @@ export default function Navbar({ userName = 'User', userRole = 'Applier', onMenu
             {showProfile && (
               <div className="absolute right-0 mt-2 w-40 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
                 <button className="block w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 border-b border-gray-100">
-                  {t.navbar.profile}
+                  Profile
                 </button>
                 <button className="block w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 border-b border-gray-100">
-                  {t.navbar.settings}
+                  Settings
                 </button>
                 <button
                   onClick={() => {
@@ -92,7 +74,7 @@ export default function Navbar({ userName = 'User', userRole = 'Applier', onMenu
                   }}
                   className="block w-full text-left px-4 py-3 text-sm text-red-600 hover:bg-red-50"
                 >
-                  {t.navbar.logout || 'Logout'}
+                  Logout
                 </button>
               </div>
             )}
