@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import { loginUser } from '../services/authService'
 import AuthLayout from '../components/AuthLayout'
 import translations from '../utils/translations.json'
 
@@ -20,15 +20,12 @@ export default function Login() {
     setLoading(true)
 
     try {
-      const response = await axios.post('http://localhost:5000/login', {
-        email,
-        password,
-      })
+      const response = await loginUser({ email, password })
 
-      const { token, role } = response.data
+      const { token, role } = response
 
-      localStorage.setItem('authToken', token)
-      localStorage.setItem('userRole', role)
+      localStorage.setItem('token', token)
+      localStorage.setItem('role', role)
 
       if (role === 'applier') {
         navigate('/applier')
@@ -36,8 +33,8 @@ export default function Login() {
         navigate('/recruiter')
       }
     } catch (err) {
-      setError(err.response?.data?.error || t.loginError)
-      console.error('Login error:', err)
+      setError(err.message || t.loginError)
+      console.error("Registration error:", err)
     } finally {
       setLoading(false)
     }
