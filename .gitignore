@@ -1,9 +1,4 @@
-<<<<<<< HEAD
-
-node_modules
-=======
 client
 node_modules
 .env
 tests
->>>>>>> backend/database-setup
