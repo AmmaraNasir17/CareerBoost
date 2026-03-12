@@ -1,11 +1,12 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import { registerUser } from '../services/authService'
 import AuthLayout from '../components/AuthLayout'
 import translations from '../utils/translations.json'
 
 export default function Register() {
   const navigate = useNavigate()
+  const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
@@ -32,16 +33,17 @@ export default function Register() {
     setLoading(true)
 
     try {
-      const response = await axios.post('http://localhost:3000/register', {
+      const response = await registerUser({
+        name,
         email,
         password,
         role,
       })
 
-      const { token } = response.data
+      const { token } = response
 
-      localStorage.setItem('authToken', token)
-      localStorage.setItem('userRole', role)
+      localStorage.setItem('token', token)
+      localStorage.setItem('role', role)
 
       if (role === 'applier') {
         navigate('/applier')
@@ -49,8 +51,9 @@ export default function Register() {
         navigate('/recruiter')
       }
     } catch (err) {
-      setError(err.response?.data?.error || t.registerError)
-      console.error('Registration error:', err)
+      setError(err.message || t.registerError)
+      console.error("Registration error:", err)
+      
     } finally {
       setLoading(false)
     }
@@ -62,9 +65,24 @@ export default function Register() {
         <div className="space-y-2">
           <h2 className="text-3xl font-semibold text-gray-900">{t.registerTitle}</h2>
           <p className="text-gray-600 text-sm font-normal">{t.registerSubtitle}</p>
-        </div>
+        </div>        
 
         <form onSubmit={handleSubmit} className="space-y-5">
+          <div className="space-y-2">
+            <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+              {t.nameLabel}
+            </label>
+            <input
+              id="name"
+              type="name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder={t.namePlaceholder}
+              required
+              className="corporate-input"
+            />
+          </div>
+
           <div className="space-y-2">
             <label htmlFor="email" className="block text-sm font-medium text-gray-700">
               {t.emailLabel}
@@ -90,7 +108,7 @@ export default function Register() {
               onChange={(e) => setRole(e.target.value)}
               className="corporate-input corporate-select"
             >
-              <option value="applier">{t.jobSeeker}</option>
+              <option value="applier">{t.applier}</option>
               <option value="recruiter">{t.recruiter}</option>
             </select>
           </div>
