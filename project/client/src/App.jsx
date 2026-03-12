@@ -1,10 +1,9 @@
-import React from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import LandingPage from './pages/LandingPage'
+import Register from './pages/Register'
+import Login from './pages/Login'
 import ApplierDashboard from './pages/ApplierDashboard'
 import RecruiterDashboard from './pages/RecruiterDashboard'
-import Login from './pages/Login'
-import Register from './pages/Register'
-import LandingPage from './pages/LandingPage'
 import ProtectedRoute from './components/ProtectedRoute'
 
 function App() {

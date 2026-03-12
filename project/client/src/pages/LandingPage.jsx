@@ -1,37 +1,11 @@
-import React from 'react'
 import { useNavigate } from 'react-router-dom'
+import translations from '../utils/translations.json'
+
 
 export default function LandingPage() {
   const navigate = useNavigate()
 
-  const t = {
-    logIn: 'Log In',
-    subtitle:
-      'CareerBoost helps job seekers and recruiters connect with meaningful opportunities. Find your next role or hire top talent with confidence.',
-    getStarted: 'Get Started',
-    learnMore: 'Learn More',
-    trustedBy: 'Trusted by Professionals',
-    trustedDesc: 'CareerBoost connects thousands of job seekers and companies every day.',
-    activeJobSeekers: 'Active Job Seekers',
-    activeJobSeekersDesc: 'Growing community of professionals',
-    companiesHiring: 'Companies Hiring',
-    companiesHiringDesc: 'From startups to enterprises',
-    satisfaction: 'User Satisfaction',
-    satisfactionDesc: 'Highly rated by our community',
-    product: 'Product',
-    forJobSeekersFooter: 'For Job Seekers',
-    forRecruitersFooter: 'For Recruiters',
-    pricing: 'Pricing',
-    company: 'Company',
-    about: 'About',
-    blog: 'Blog',
-    contact: 'Contact',
-    legal: 'Legal',
-    privacy: 'Privacy',
-    terms: 'Terms',
-    security: 'Security',
-    copyright: '© 2024 CareerBoost. All rights reserved.',
-  }
+  const t = translations.landingPage
 
   return (
     <div className="min-h-screen bg-white overflow-hidden">
