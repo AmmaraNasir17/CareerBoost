@@ -1,19 +1,32 @@
+import { useNavigate, useLocation } from 'react-router-dom'
+
 export default function Sidebar({ currentRole = 'applier', isMobileOpen = false, onClose = () => {} }) {
+  const navigate = useNavigate()
+  const location = useLocation()
+
   const applierMenuItems = [
-    { label: 'Dashboard', icon: '🏠', active: true },
-    { label: 'Applications', icon: '📋', active: false },
-    { label: 'Saved Jobs', icon: '🔖', active: false },
-    { label: 'Messages', icon: '💬', active: false },
+    { label: 'Dashboard', icon: '🏠', route: '/applier' },
+    { label: 'Jobs', icon: '💼', route: '/applier/jobs' },
+    { label: 'Applications', icon: '📋', route: '/applier/applications' },
+    { label: 'Saved Jobs', icon: '🔖', route: '/applier/saved-jobs' },
+    { label: 'Messages', icon: '💬', route: '/applier/messages' },
   ]
 
   const recruiterMenuItems = [
-    { label: 'Dashboard', icon: '📊', active: true },
-    { label: 'Post Job', icon: '📝', active: false },
-    { label: 'Applicants', icon: '📥', active: false },
-    { label: 'Team', icon: '👥', active: false },
+    { label: 'Dashboard', icon: '📊', route: '/recruiter' },
+    { label: 'Jobs', icon: '💼', route: '/recruiter/jobs' },
+    { label: 'Applicants', icon: '📥', route: '/recruiter/applicants' },
+    { label: 'Team', icon: '👥', route: '/recruiter/team' },
   ]
 
   const menuItems = currentRole === 'recruiter' ? recruiterMenuItems : applierMenuItems
+
+  const isActive = (route) => {
+    if (route === '/applier' || route === '/recruiter') {
+      return location.pathname === route
+    }
+    return location.pathname.startsWith(route)
+  }
 
   return (
     <>
@@ -24,8 +37,9 @@ export default function Sidebar({ currentRole = 'applier', isMobileOpen = false,
           {menuItems.map((item, index) => (
             <button
               key={index}
+              onClick={() => navigate(item.route)}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-all ${
-                item.active
+                isActive(item.route)
                   ? 'bg-blue-50 text-blue-700'
                   : 'text-gray-700 hover:bg-gray-50'
               }`}
@@ -71,9 +85,12 @@ export default function Sidebar({ currentRole = 'applier', isMobileOpen = false,
             {menuItems.map((item, index) => (
               <button
                 key={index}
-                onClick={onClose}
+                onClick={() => {
+                  navigate(item.route)
+                  onClose()
+                }}
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-all ${
-                  item.active
+                  isActive(item.route)
                     ? 'bg-blue-50 text-blue-700'
                     : 'text-gray-700 hover:bg-gray-50'
                 }`}

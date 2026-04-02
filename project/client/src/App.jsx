@@ -4,6 +4,13 @@ import Register from "./pages/Register";
 import Login from "./pages/Login";
 import ApplierDashboard from "./pages/ApplierDashboard";
 import RecruiterDashboard from "./pages/RecruiterDashboard";
+import ApplierJobs from "./pages/applier/ApplierJobs";
+import ApplierApplications from "./pages/applier/ApplierApplications";
+import SavedJobs from "./pages/applier/SavedJobs";
+import Messages from "./pages/applier/Messages";
+import RecruiterJobs from "./pages/recruiter/RecruiterJobs";
+import RecruiterApplications from "./pages/recruiter/RecruiterApplications";
+import Team from "./pages/recruiter/Team";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
@@ -22,10 +29,66 @@ function App() {
           }
         />
         <Route
+          path="/applier/jobs"
+          element={
+            <ProtectedRoute role="applier">
+              <ApplierJobs />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/applier/applications"
+          element={
+            <ProtectedRoute role="applier">
+              <ApplierApplications />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/applier/saved-jobs"
+          element={
+            <ProtectedRoute role="applier">
+              <SavedJobs />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/applier/messages"
+          element={
+            <ProtectedRoute role="applier">
+              <Messages />
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/recruiter"
           element={
             <ProtectedRoute role="recruiter">
               <RecruiterDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/recruiter/jobs"
+          element={
+            <ProtectedRoute role="recruiter">
+              <RecruiterJobs />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/recruiter/applicants"
+          element={
+            <ProtectedRoute role="recruiter">
+              <RecruiterApplications />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/recruiter/team"
+          element={
+            <ProtectedRoute role="recruiter">
+              <Team />
             </ProtectedRoute>
           }
         />
