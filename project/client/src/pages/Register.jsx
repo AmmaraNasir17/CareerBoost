@@ -44,6 +44,8 @@ export default function Register() {
 
       localStorage.setItem('token', token)
       localStorage.setItem('role', role)
+      localStorage.setItem('userName', name)
+      localStorage.setItem('userEmail', email)
 
       if (role === 'applier') {
         navigate('/applier')
