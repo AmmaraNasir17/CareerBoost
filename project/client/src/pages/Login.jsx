@@ -24,8 +24,14 @@ export default function Login() {
 
       const { token, role } = response
 
+      // Clear any previous user data
+      localStorage.removeItem('userName')
+      localStorage.removeItem('userEmail')
+      
+      // Set current user data
       localStorage.setItem('token', token)
       localStorage.setItem('role', role)
+      localStorage.setItem('userEmail', email)
 
       if (role === 'applier') {
         navigate('/applier')
