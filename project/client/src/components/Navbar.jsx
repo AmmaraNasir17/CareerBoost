@@ -5,6 +5,16 @@ export default function Navbar({ userName = 'User', userRole = 'Applier', onMenu
   const navigate = useNavigate()
   const [showProfile, setShowProfile] = useState(false)
 
+  const handleSettingsClick = () => {
+    const userRole = localStorage.getItem('role')
+    if (userRole === 'recruiter') {
+      navigate('/recruiter/settings')
+    } else {
+      navigate('/applier/settings')
+    }
+    setShowProfile(false)
+  }
+
   return (
     <nav className="fixed top-0 left-0 right-0 z-40 bg-white border-b border-gray-200 h-16 shadow-sm">
       <div className="h-full px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4">
@@ -63,13 +73,16 @@ export default function Navbar({ userName = 'User', userRole = 'Applier', onMenu
                 <button className="block w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 border-b border-gray-100">
                   Profile
                 </button>
-                <button className="block w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 border-b border-gray-100">
+                <button 
+                  onClick={handleSettingsClick}
+                  className="block w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 border-b border-gray-100"
+                >
                   Settings
                 </button>
                 <button
                   onClick={() => {
-                    localStorage.removeItem('authToken');
-                    localStorage.removeItem('userRole');
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('role');
                     navigate('/login');
                   }}
                   className="block w-full text-left px-4 py-3 text-sm text-red-600 hover:bg-red-50"
