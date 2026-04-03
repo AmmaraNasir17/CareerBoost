@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import LandingPage from "./pages/LandingPage";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
+import ForgotPassword from "./pages/ForgotPassword";
 import ApplierDashboard from "./pages/ApplierDashboard";
 import RecruiterDashboard from "./pages/RecruiterDashboard";
 import ApplierJobs from "./pages/applier/ApplierJobs";
@@ -22,6 +23,7 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route
           path="/applier"
           element={
