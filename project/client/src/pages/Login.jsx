@@ -104,7 +104,7 @@ export default function Login() {
                 {t.rememberMe}
               </label>
             </div>
-            <a href="#" className="text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors duration-150">
+            <a href="/forgot-password" className="text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors duration-150">
               {t.forgotPassword}
             </a>
           </div>
