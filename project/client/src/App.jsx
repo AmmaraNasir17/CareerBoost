@@ -6,10 +6,12 @@ import ApplierDashboard from "./pages/ApplierDashboard";
 import RecruiterDashboard from "./pages/RecruiterDashboard";
 import ApplierJobs from "./pages/applier/ApplierJobs";
 import ApplierApplications from "./pages/applier/ApplierApplications";
+import ApplierSettings from "./pages/applier/ApplierSettings";
 import SavedJobs from "./pages/applier/SavedJobs";
 import Messages from "./pages/applier/Messages";
 import RecruiterJobs from "./pages/recruiter/RecruiterJobs";
 import RecruiterApplications from "./pages/recruiter/RecruiterApplications";
+import RecruiterSettings from "./pages/recruiter/RecruiterSettings";
 import Team from "./pages/recruiter/Team";
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -61,6 +63,14 @@ function App() {
           }
         />
         <Route
+          path="/applier/settings"
+          element={
+            <ProtectedRoute role="applier">
+              <ApplierSettings />
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/recruiter"
           element={
             <ProtectedRoute role="recruiter">
@@ -89,6 +99,14 @@ function App() {
           element={
             <ProtectedRoute role="recruiter">
               <Team />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/recruiter/settings"
+          element={
+            <ProtectedRoute role="recruiter">
+              <RecruiterSettings />
             </ProtectedRoute>
           }
         />
