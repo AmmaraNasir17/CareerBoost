@@ -14,6 +14,7 @@ import RecruiterJobs from "./pages/recruiter/RecruiterJobs";
 import RecruiterApplications from "./pages/recruiter/RecruiterApplications";
 import RecruiterSettings from "./pages/recruiter/RecruiterSettings";
 import Team from "./pages/recruiter/Team";
+import CommonProfile from "./pages/common/Profile";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
@@ -109,6 +110,14 @@ function App() {
           element={
             <ProtectedRoute role="recruiter">
               <RecruiterSettings />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <CommonProfile />
             </ProtectedRoute>
           }
         />
