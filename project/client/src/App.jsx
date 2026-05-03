@@ -11,6 +11,7 @@ import ApplierSettings from "./pages/applier/ApplierSettings";
 import SavedJobs from "./pages/applier/SavedJobs";
 import Messages from "./pages/applier/Messages";
 import RecruiterJobs from "./pages/recruiter/RecruiterJobs";
+import RecruiterPostJob from "./pages/recruiter/RecruiterPostJob";
 import RecruiterApplications from "./pages/recruiter/RecruiterApplications";
 import RecruiterSettings from "./pages/recruiter/RecruiterSettings";
 import Team from "./pages/recruiter/Team";
@@ -86,6 +87,14 @@ function App() {
           element={
             <ProtectedRoute role="recruiter">
               <RecruiterJobs />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/recruiter/post-job"
+          element={
+            <ProtectedRoute role="recruiter">
+              <RecruiterPostJob />
             </ProtectedRoute>
           }
         />
