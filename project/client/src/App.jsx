@@ -51,22 +51,6 @@ function App() {
           }
         />
         <Route
-          path="/applier/saved-jobs"
-          element={
-            <ProtectedRoute role="applier">
-              <SavedJobs />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/applier/messages"
-          element={
-            <ProtectedRoute role="applier">
-              <Messages />
-            </ProtectedRoute>
-          }
-        />
-        <Route
           path="/applier/settings"
           element={
             <ProtectedRoute role="applier">
@@ -103,14 +87,6 @@ function App() {
           element={
             <ProtectedRoute role="recruiter">
               <RecruiterApplications />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/recruiter/team"
-          element={
-            <ProtectedRoute role="recruiter">
-              <Team />
             </ProtectedRoute>
           }
         />

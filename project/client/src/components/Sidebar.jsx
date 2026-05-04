@@ -8,15 +8,12 @@ export default function Sidebar({ currentRole = 'applier', isMobileOpen = false,
     { label: 'Dashboard', icon: '🏠', route: '/applier' },
     { label: 'Jobs', icon: '💼', route: '/applier/jobs' },
     { label: 'Applications', icon: '📋', route: '/applier/applications' },
-    { label: 'Saved Jobs', icon: '🔖', route: '/applier/saved-jobs' },
-    { label: 'Messages', icon: '💬', route: '/applier/messages' },
   ]
 
   const recruiterMenuItems = [
     { label: 'Dashboard', icon: '📊', route: '/recruiter' },
     { label: 'Jobs', icon: '💼', route: '/recruiter/jobs' },
     { label: 'Applicants', icon: '📥', route: '/recruiter/applicants' },
-    { label: 'Team', icon: '👥', route: '/recruiter/team' },
   ]
 
   const menuItems = currentRole === 'recruiter' ? recruiterMenuItems : applierMenuItems
@@ -49,13 +46,6 @@ export default function Sidebar({ currentRole = 'applier', isMobileOpen = false,
             </button>
           ))}
         </nav>
-
-        {/* Footer */}
-        <div className="p-4 border-t border-gray-200 bg-gray-50">
-          <button className="w-full px-4 py-2 text-xs font-semibold text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors">
-            Sign Out
-          </button>
-        </div>
       </aside>
 
       {/* Mobile Sidebar */}
@@ -91,12 +81,6 @@ export default function Sidebar({ currentRole = 'applier', isMobileOpen = false,
               </button>
             ))}
           </nav>
-
-          <div className="p-4 border-t border-gray-200 bg-gray-50">
-            <button className="w-full px-4 py-2 text-xs font-semibold text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors">
-              Sign Out
-            </button>
-          </div>
         </div>
       </>
     </>

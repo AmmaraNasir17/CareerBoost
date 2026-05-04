@@ -14,4 +14,28 @@ router.get(
   applicationController.getMyApplications
 );
 
+// View my applicants
+router.get(
+  "/my-applicants",
+  authMiddleware,
+  roleMiddleware(["recruiter"]),
+  applicationController.getMyApplicants
+);
+
+// View applications for a job (recruiter)
+router.get(
+  "/job/:jobId/applications",
+  authMiddleware,
+  roleMiddleware(["recruiter"]),
+  applicationController.getApplicationsForJob
+);
+
+// Update application status (recruiter)
+router.put(
+  "/:applicationId/status",
+  authMiddleware,
+  roleMiddleware(["recruiter"]),
+  applicationController.updateApplicationStatus
+);
+
 module.exports = router;
