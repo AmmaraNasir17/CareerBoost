@@ -30,7 +30,14 @@ router.get(
 
 // Public
 router.get("/", jobController.getJobs);
-
 router.get("/:id", jobController.getJob);
+
+// Applier only
+router.post(
+  "/:id/apply",
+  authMiddleware,
+  roleMiddleware(["applier"]),
+  jobController.applyToJob
+);
 
 module.exports = router;

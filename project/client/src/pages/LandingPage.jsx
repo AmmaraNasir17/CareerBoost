@@ -53,9 +53,7 @@ export default function LandingPage() {
             >
               {t.getStarted}
             </button>
-            <button className="px-8 py-3 bg-white hover:bg-gray-50 text-gray-900 font-semibold rounded-lg border border-gray-200 transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 active:scale-95 w-full sm:w-auto">
-              {t.learnMore}
-            </button>
+            
           </div>
         </div>
       </section>

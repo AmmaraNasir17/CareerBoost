@@ -6,6 +6,8 @@ const {
   removeJob,
 } = require("../models/job.model");
 
+const { createApplication } = require("../models/application.model");
+
 // Recruiter → create job
 exports.createJob = async (req, res) => {
   try {
@@ -89,6 +91,35 @@ exports.getJob = async (req, res) => {
 
     res.json(job);
   } catch (err) {
+    console.log(err);
+    res.status(500).json("Server error");
+  }
+};
+
+// Applier → apply to job
+exports.applyToJob = async (req, res) => {
+  try {
+    const jobId = req.params.id;
+    const job = await getJobById(jobId);
+
+    if (!job) {
+      return res.status(404).json({
+        message: "Job not found",
+      });
+    }
+
+    const application = await createApplication(jobId, req.user.id);
+
+    res.json({
+      message: "Applied successfully",
+      application,
+    });
+  } catch (err) {
+    if (err.message === "Already applied to this job") {
+      return res.status(400).json({
+        message: err.message,
+      });
+    }
     console.log(err);
     res.status(500).json("Server error");
   }
