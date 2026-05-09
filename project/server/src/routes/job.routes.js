@@ -1,43 +1,20 @@
 const express = require("express");
 const router = express.Router();
 
-const jobController = require("../controllers/job.controller");
-
+const jobController = require("../controllers/jobs/job.controller");
+const applicationController = require("../controllers/applications/application.controller");
 const authMiddleware = require("../middleware/auth.middleware");
 const roleMiddleware = require("../middleware/role.middleware");
 
-// Recruiter only
-router.post(
-  "/",
-  authMiddleware,
-  roleMiddleware(["recruiter"]),
-  jobController.createJob
-);
+router.get("/", jobController.getAllJobs);
+router.get("/my-jobs", authMiddleware, roleMiddleware("recruiter"), jobController.getMyJobs);
+router.get("/:id", jobController.getJobById);
 
-router.delete(
-  "/:id",
-  authMiddleware,
-  roleMiddleware(["recruiter"]),
-  jobController.deleteJob
-);
+router.post("/", authMiddleware, roleMiddleware("recruiter"), jobController.postJob);
+router.put("/:id", authMiddleware, roleMiddleware("recruiter"), jobController.editJob);
+router.delete("/:id", authMiddleware, roleMiddleware("recruiter"), jobController.removeJob);
 
-router.get(
-    "/my-jobs",
-    authMiddleware,
-    roleMiddleware(["recruiter"]),
-    jobController.getMyJobs
-);
-
-// Public
-router.get("/", jobController.getJobs);
-router.get("/:id", jobController.getJob);
-
-// Applier only
-router.post(
-  "/:id/apply",
-  authMiddleware,
-  roleMiddleware(["applier"]),
-  jobController.applyToJob
-);
+router.post("/:id/apply", authMiddleware, roleMiddleware("applier"), applicationController.applyToJob);
+router.get("/:id/applicants", authMiddleware, roleMiddleware("recruiter"), applicationController.getApplicantsForJob);
 
 module.exports = router;
