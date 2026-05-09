@@ -48,12 +48,11 @@ export default function LandingPage() {
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4">
             <button
-              onClick={() => navigate('/login')}
+              onClick={() => navigate('/register')}
               className="px-8 py-3 bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white font-semibold rounded-lg transition-all duration-200 shadow-md hover:shadow-lg hover:-translate-y-0.5 active:scale-95 w-full sm:w-auto"
             >
               {t.getStarted}
             </button>
-            
           </div>
         </div>
       </section>
