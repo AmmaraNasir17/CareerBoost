@@ -1,86 +1,91 @@
 const pool = require("../config/db");
 
-// Apply to job
-async function createApplication(job_id, user_id) {
-
-  // prevent duplicate applications
-  const existing = await pool.query(
-    "SELECT * FROM applications WHERE job_id=$1 AND user_id=$2",
-    [job_id, user_id]
-  );
-
-  if (existing.rows.length > 0) {
-    throw new Error("Already applied to this job");
-  }
-
+async function createApplication(jobId, applierId) {
   const result = await pool.query(
-    `INSERT INTO applications (job_id, user_id)
-     VALUES ($1,$2)
+    `INSERT INTO applications (job_id, applier_id)
+     VALUES ($1, $2)
      RETURNING *`,
-    [job_id, user_id]
+    [jobId, applierId]
   );
-
   return result.rows[0];
 }
 
-// Get applications of logged-in user
-async function getUserApplications(user_id) {
+async function findApplicationByJobAndApplier(jobId, applierId) {
   const result = await pool.query(
-    `SELECT applications.*, jobs.title, jobs.company
+    `SELECT * FROM applications WHERE job_id = $1 AND applier_id = $2`,
+    [jobId, applierId]
+  );
+  return result.rows[0];
+}
+
+async function findApplicationsByApplier(applierId) {
+  const result = await pool.query(
+    `SELECT applications.*, jobs.title AS job_title, jobs.location, jobs.job_type,
+            users.name AS recruiter_name
      FROM applications
      JOIN jobs ON applications.job_id = jobs.id
-     WHERE applications.user_id=$1
-     ORDER BY applied_at DESC`,
-    [user_id]
+     JOIN users ON jobs.recruiter_id = users.id
+     WHERE applications.applier_id = $1
+     ORDER BY applications.applied_at DESC`,
+    [applierId]
   );
-
   return result.rows;
 }
 
-// Get applicants of logged-in recruiter
-async function getUserApplicants(recruiter_id) {
+async function findApplicationsByJob(jobId) {
   const result = await pool.query(
-    `SELECT applications.*, users.name, users.email, jobs.title AS "appliedJob"
+    `SELECT applications.*, users.name AS applier_name, users.email AS applier_email
      FROM applications
-     JOIN users ON applications.user_id = users.id
-      JOIN jobs ON applications.job_id = jobs.id
-      WHERE jobs.created_by=$1
-      ORDER BY applied_at DESC`,
-    [recruiter_id]
+     JOIN users ON applications.applier_id = users.id
+     WHERE applications.job_id = $1
+     ORDER BY applications.applied_at DESC`,
+    [jobId]
   );
-
   return result.rows;
 }
 
-// Get applications for a specific job
-async function getApplicationsForJob(job_id) {
+async function findApplicationsByRecruiter(recruiterId) {
   const result = await pool.query(
-    `SELECT applications.*, users.name, users.email, jobs.title AS "appliedJob"
+    `SELECT applications.*, jobs.title AS job_title,
+            users.name AS applier_name, users.email AS applier_email
      FROM applications
-     JOIN users ON applications.user_id = users.id
      JOIN jobs ON applications.job_id = jobs.id
-     WHERE applications.job_id=$1
-     ORDER BY applied_at DESC`,
-    [job_id]
+     JOIN users ON applications.applier_id = users.id
+     WHERE jobs.recruiter_id = $1
+     ORDER BY applications.applied_at DESC`,
+    [recruiterId]
   );
-
   return result.rows;
 }
 
-// Update application status
-async function updateApplicationStatus(application_id, status) {
+async function updateApplicationStatus(id, recruiterId, status) {
   const result = await pool.query(
-    "UPDATE applications SET status=$1 WHERE id=$2 RETURNING *",
-    [status, application_id]
+    `UPDATE applications
+     SET status = $1
+     FROM jobs
+     WHERE applications.id = $2
+       AND applications.job_id = jobs.id
+       AND jobs.recruiter_id = $3
+     RETURNING applications.*`,
+    [status, id, recruiterId]
   );
+  return result.rows[0];
+}
 
+async function findApplicationById(id) {
+  const result = await pool.query(
+    `SELECT * FROM applications WHERE id = $1`,
+    [id]
+  );
   return result.rows[0];
 }
 
 module.exports = {
   createApplication,
-  getUserApplications,
-  getApplicationsForJob,
+  findApplicationByJobAndApplier,
+  findApplicationsByApplier,
+  findApplicationsByJob,
+  findApplicationsByRecruiter,
   updateApplicationStatus,
-  getUserApplicants,
+  findApplicationById,
 };
