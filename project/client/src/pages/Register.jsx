@@ -47,11 +47,7 @@ export default function Register() {
       localStorage.setItem('userName', name)
       localStorage.setItem('userEmail', email)
 
-      if (role === 'applier') {
-        navigate('/applier')
-      } else if (role === 'recruiter') {
-        navigate('/recruiter')
-      }
+      navigate('/')
     } catch (err) {
       setError(err.message || t.registerError)
       console.error("Registration error:", err)

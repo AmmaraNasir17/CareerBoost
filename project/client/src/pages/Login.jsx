@@ -25,8 +25,7 @@ export default function Login() {
       const { token, role } = response
 
       // Clear any previous user data
-      localStorage.removeItem('userName')
-      localStorage.removeItem('userEmail')
+      localStorage.clear()
       
       // Set current user data
       localStorage.setItem('token', token)
