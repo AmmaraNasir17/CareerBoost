@@ -8,14 +8,11 @@ import RecruiterDashboard from "./pages/RecruiterDashboard";
 import ApplierJobs from "./pages/applier/ApplierJobs";
 import ApplierApplications from "./pages/applier/ApplierApplications";
 import ApplierSettings from "./pages/applier/ApplierSettings";
-import SavedJobs from "./pages/applier/SavedJobs";
-import Messages from "./pages/applier/Messages";
+import ApplierProfile from "./pages/applier/ApplierProfile";
 import RecruiterJobs from "./pages/recruiter/RecruiterJobs";
 import RecruiterPostJob from "./pages/recruiter/RecruiterPostJob";
 import RecruiterApplications from "./pages/recruiter/RecruiterApplications";
 import RecruiterSettings from "./pages/recruiter/RecruiterSettings";
-import Team from "./pages/recruiter/Team";
-import CommonProfile from "./pages/common/Profile";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
@@ -99,10 +96,10 @@ function App() {
           }
         />
         <Route
-          path="/profile"
+          path="/applier/profile"
           element={
             <ProtectedRoute>
-              <CommonProfile />
+              <ApplierProfile />
             </ProtectedRoute>
           }
         />

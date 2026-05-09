@@ -7,3 +7,7 @@ export function registerUser(userData) {
 export function loginUser(userData) {
   return apiRequest("/auth/login", "POST", userData);
 }
+
+export function getUser(token) {
+  return apiRequest("/auth/me", "GET", null, token);
+}

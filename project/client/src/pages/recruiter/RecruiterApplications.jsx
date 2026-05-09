@@ -3,6 +3,7 @@ import {
   getApplicants,
   updateApplicationStatus,
 } from "../../services/applicationService";
+import { getUser } from "../../services/authService";
 import Navbar from "../../components/Navbar";
 import Sidebar from "../../components/Sidebar";
 
@@ -20,28 +21,59 @@ function getStatusColor(status) {
 export default function RecruiterApplications() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [applicantsData, setApplicantsData] = useState([]);
+  const [user, setUser] = useState(null);
+
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
   const token = localStorage.getItem("token");
 
+  // ============================================
+  // INIT LOAD
+  // ============================================
   useEffect(() => {
-    fetchApplicants();
+    fetchAll();
   }, []);
 
-  const fetchApplicants = async () => {
+  const fetchAll = async () => {
     try {
-      const data = await getApplicants(token);
-      setApplicantsData(data);
+      setLoading(true);
+      setError("");
+
+      await Promise.all([fetchUser(), fetchApplicants()]);
+
     } catch (err) {
       console.error(err);
+      setError(err.message || "Failed to load data");
+
     } finally {
       setLoading(false);
     }
   };
 
+  // ============================================
+  // USER
+  // ============================================
+  const fetchUser = async () => {
+    const data = await getUser(token);
+    setUser(data);
+  };
+
+  // ============================================
+  // APPLICANTS
+  // ============================================
+  const fetchApplicants = async () => {
+    const data = await getApplicants(token);
+    setApplicantsData(data);
+  };
+
+  // ============================================
+  // STATUS UPDATE
+  // ============================================
   const handleStatusChange = async (applicantId, newStatus) => {
     if (
       window.confirm(
-        `Are you sure you want to mark this applicant as ${newStatus}?`,
+        `Are you sure you want to mark this applicant as ${newStatus}?`
       )
     ) {
       try {
@@ -49,10 +81,14 @@ export default function RecruiterApplications() {
         fetchApplicants();
       } catch (err) {
         console.error(err);
+        setError(err.message || "Failed to update status");
       }
     }
   };
 
+  // ============================================
+  // LOADING
+  // ============================================
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -61,13 +97,17 @@ export default function RecruiterApplications() {
     );
   }
 
+  // ============================================
+  // UI
+  // ============================================
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar
-        userName="Recruiter"
+        userName={user?.name || "Recruiter"}
         userRole="Recruiter"
         onMenuClick={() => setMobileMenuOpen(!mobileMenuOpen)}
       />
+
       <Sidebar
         currentRole="recruiter"
         isMobileOpen={mobileMenuOpen}
@@ -76,7 +116,8 @@ export default function RecruiterApplications() {
 
       <main className="md:ml-64 mt-16 px-4 sm:px-6 lg:px-8 py-6 md:py-8">
         <div className="max-w-7xl mx-auto">
-          {/* Page Header */}
+
+          {/* Header */}
           <div className="mb-8">
             <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
               Applicants
@@ -86,116 +127,122 @@ export default function RecruiterApplications() {
             </p>
           </div>
 
-          {/* Applicants Table Card */}
+          {/* Error */}
+          {error && (
+            <div className="mb-4 bg-red-50 border border-red-200 text-red-700 p-3 rounded-lg">
+              {error}
+            </div>
+          )}
+
+          {/* Table */}
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-            {/* Table Header */}
-            <div className="px-6 py-4 md:py-6 border-b border-gray-200 bg-gray-50">
+
+            <div className="px-6 py-4 md:py-6 border-b bg-gray-50">
               <h2 className="text-lg font-bold text-gray-900">
                 Candidate Applications
               </h2>
             </div>
 
-            {/* Responsive Table */}
             <div className="overflow-x-auto">
               <table className="w-full">
+
                 <thead>
-                  <tr className="bg-gray-50 border-b border-gray-200">
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                  <tr className="bg-gray-50 border-b">
+                    <th className="px-6 py-4 text-left text-xs font-semibold uppercase">
                       Candidate Name
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                    <th className="px-6 py-4 text-left text-xs font-semibold uppercase">
                       Email
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                    <th className="px-6 py-4 text-left text-xs font-semibold uppercase">
                       Applied Job
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                    <th className="px-6 py-4 text-left text-xs font-semibold uppercase">
                       Status
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                    <th className="px-6 py-4 text-left text-xs font-semibold uppercase">
                       Actions
                     </th>
                   </tr>
                 </thead>
+
                 <tbody>
                   {applicantsData.map((applicant, index) => (
                     <tr
                       key={applicant.id}
-                      className={`${
-                        index !== applicantsData.length - 1
-                          ? "border-b border-gray-200"
-                          : ""
-                      } hover:bg-gray-50 transition-colors`}
+                      className="border-b hover:bg-gray-50"
                     >
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <p className="font-semibold text-gray-900">
-                          {applicant.name}
-                        </p>
+                      <td className="px-6 py-4 font-semibold">
+                        {applicant.name}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <p className="text-gray-600 text-sm">
-                          {applicant.email}
-                        </p>
+
+                      <td className="px-6 py-4 text-sm text-gray-600">
+                        {applicant.email}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <p className="text-gray-600">{applicant.appliedJob}</p>
+
+                      <td className="px-6 py-4 text-sm text-gray-600">
+                        {applicant.appliedJob}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+
+                      <td className="px-6 py-4">
                         <span
-                          className={`inline-block px-3 py-1 text-xs font-semibold rounded-lg border ${getStatusColor(applicant.status)}`}
+                          className={`px-3 py-1 text-xs font-semibold rounded-lg border ${getStatusColor(
+                            applicant.status
+                          )}`}
                         >
-                          {applicant.status.replace("_", " ")
-                            .replace(/\b\w/g, (c) => c.toUpperCase())}
+                          {applicant.status
+                            ?.replace("_", " ")
+                            ?.replace(/\b\w/g, (c) => c.toUpperCase())}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center gap-2">
-                          <button className="px-3 py-1.5 text-xs font-semibold text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
-                            View Profile
+
+                      <td className="px-6 py-4">
+                        <div className="flex gap-2">
+
+                          <button className="px-3 py-1 text-xs text-blue-600 hover:bg-blue-50 rounded-lg">
+                            View
                           </button>
-                          
-                          {applicant.status !== "Shortlisted" && (
+
+                          {applicant.status !== "shortlisted" && (
                             <button
                               onClick={() =>
-                                handleStatusChange(applicant.id, "shortlisted")
+                                handleStatusChange(
+                                  applicant.id,
+                                  "shortlisted"
+                                )
                               }
-                              className="px-3 py-1.5 text-xs font-semibold text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                              className="px-3 py-1 text-xs text-green-600 hover:bg-green-50 rounded-lg"
                             >
                               Shortlist
                             </button>
                           )}
 
-                          {applicant.status !== "Rejected" && (
+                          {applicant.status !== "rejected" && (
                             <button
                               onClick={() =>
                                 handleStatusChange(applicant.id, "rejected")
                               }
-                              className="px-3 py-1.5 text-xs font-semibold text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                              className="px-3 py-1 text-xs text-red-600 hover:bg-red-50 rounded-lg"
                             >
                               Reject
                             </button>
                           )}
+
                         </div>
                       </td>
                     </tr>
                   ))}
                 </tbody>
+
               </table>
             </div>
 
-            {/* Empty State */}
             {applicantsData.length === 0 && (
-              <div className="px-6 py-12 text-center">
-                <p className="text-gray-500 text-lg">No applicants yet</p>
+              <div className="px-6 py-12 text-center text-gray-500">
+                No applicants yet
               </div>
             )}
 
-            {/* Table Footer */}
-            <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
-              <p className="text-sm text-gray-600">
-                Showing {applicantsData.length} applicants
-              </p>
-            </div>
           </div>
         </div>
       </main>

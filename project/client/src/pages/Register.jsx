@@ -47,7 +47,7 @@ export default function Register() {
       localStorage.setItem('userName', name)
       localStorage.setItem('userEmail', email)
 
-      navigate('/')
+      navigate('/login')
     } catch (err) {
       setError(err.message || t.registerError)
       console.error("Registration error:", err)

@@ -1,68 +1,27 @@
 import { useEffect, useState } from "react";
+import { getUser } from "../services/authService";
 import { getMyJobs } from "../services/jobService";
+import { getApplicants } from "../services/applicationService";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import StatsCard from "../components/StatsCard";
 import { BriefcaseIcon, UsersIcon, CheckCircleIcon } from "../components/Icons";
 
-const recentApplicants = [
-  {
-    id: 1,
-    name: "Alice Johnson",
-    appliedFor: "Senior React Developer",
-    appliedDate: "2024-02-18",
-    rating: 4.5,
-  },
-  {
-    id: 2,
-    name: "Bob Smith",
-    appliedFor: "Full Stack Engineer",
-    appliedDate: "2024-02-17",
-    rating: 4.2,
-  },
-  {
-    id: 3,
-    name: "Carol Davis",
-    appliedFor: "Senior React Developer",
-    appliedDate: "2024-02-16",
-    rating: 4.8,
-  },
-  {
-    id: 4,
-    name: "David Wilson",
-    appliedFor: "UI/UX Designer",
-    appliedDate: "2024-02-15",
-    rating: 4.0,
-  },
-  {
-    id: 5,
-    name: "Eva Martinez",
-    appliedFor: "Data Scientist",
-    appliedDate: "2024-02-14",
-    rating: 4.6,
-  },
-];
-
-function getRatingStars(rating) {
-  return Array.from({ length: 5 }).map((_, i) => (
-    <span
-      key={i}
-      className={i < Math.floor(rating) ? "text-yellow-400" : "text-gray-300"}
-    >
-      ★
-    </span>
-  ));
-}
-
 export default function RecruiterDashboard() {
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   const [jobs, setJobs] = useState([]);
+  const [user, setUser] = useState(null);
+  const [recentApplicants, setRecentApplicants] = useState([]);
+
   const token = localStorage.getItem("token");
 
   useEffect(() => {
+    fetchUser();
     fetchJobs();
+    fetchRecentApplicants();
   }, []);
 
   const fetchJobs = async () => {
@@ -74,10 +33,28 @@ export default function RecruiterDashboard() {
     }
   };
 
+  const fetchRecentApplicants = async () => {
+    try {
+      const data = await getApplicants(token);
+      setRecentApplicants(data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const fetchUser = async () => {
+    try {
+      const data = await getUser(token);
+      setUser(data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar
-        userName="Recruiter"
+        userName={user?.name}
         userRole="Recruiter"
         onMenuClick={() => setMobileMenuOpen(!mobileMenuOpen)}
       />
@@ -92,7 +69,7 @@ export default function RecruiterDashboard() {
           {/* Welcome Section */}
           <div className="mb-6 md:mb-8">
             <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
-              Welcome back 👋
+              Welcome {user?.name.split(' ')[0]} 👋
             </h1>
             <p className="text-sm md:text-base text-gray-600">
               Manage your job postings and review applicants
@@ -111,14 +88,17 @@ export default function RecruiterDashboard() {
             <StatsCard
               icon={UsersIcon}
               label="Total Applicants"
-              value="100"
+              value={recentApplicants.length}
               color="teal"
               trend={{ positive: true, value: 15 }}
             />
             <StatsCard
               icon={CheckCircleIcon}
               label="Shortlisted Candidates"
-              value="28"
+              value={
+                recentApplicants.filter((app) => app.status === "shortlisted")
+                  .length
+              }
               color="green"
               trend={{ positive: true, value: 5 }}
             />
@@ -160,7 +140,6 @@ export default function RecruiterDashboard() {
                             </h3>
                             <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mt-2">
                               <span className="inline-flex items-center gap-1 text-xs text-gray-600">
-                                <UsersIcon className="w-4 h-4" /> 0 Applicants
                               </span>
                               <span className="text-xs text-gray-500">
                                 Posted{" "}
@@ -169,9 +148,7 @@ export default function RecruiterDashboard() {
                             </div>
                           </div>
                           <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 sm:flex-shrink-0">
-                            <span
-                              className="text-xs font-semibold px-3 py-1.5 rounded-lg whitespace-nowrap bg-green-100 text-green-800 "
-                            >
+                            <span className="text-xs font-semibold px-3 py-1.5 rounded-lg whitespace-nowrap bg-green-100 text-green-800 ">
                               Active
                             </span>
                           </div>
@@ -187,64 +164,23 @@ export default function RecruiterDashboard() {
             <div className="space-y-4 md:space-y-6">
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6">
                 <h3 className="text-sm font-bold text-gray-900 mb-4">
-                  Hiring Progress
-                </h3>
-                <div className="space-y-4">
-                  <div>
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="text-xs font-medium text-gray-600">
-                        This Week
-                      </span>
-                      <span className="text-sm font-bold text-gray-900">8</span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div
-                        className="bg-blue-600 h-2 rounded-full"
-                        style={{ width: "40%" }}
-                      ></div>
-                    </div>
-                  </div>
-                  <div>
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="text-xs font-medium text-gray-600">
-                        This Month
-                      </span>
-                      <span className="text-sm font-bold text-gray-900">
-                        28
-                      </span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div
-                        className="bg-green-600 h-2 rounded-full"
-                        style={{ width: "65%" }}
-                      ></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6">
-                <h3 className="text-sm font-bold text-gray-900 mb-4">
                   Top Positions
                 </h3>
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <span className="text-xs text-gray-700 font-medium">
-                      React Developer
+                      {jobs[0]?.title || "N/A"}
                     </span>
-                    <span className="text-xs font-bold text-gray-900">24</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-xs text-gray-700 font-medium">
-                      Full Stack
+                      {jobs[1]?.title || "N/A"}
                     </span>
-                    <span className="text-xs font-bold text-gray-900">18</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-xs text-gray-700 font-medium">
-                      UI/UX Designer
+                      {jobs[2]?.title || "N/A"}
                     </span>
-                    <span className="text-xs font-bold text-gray-900">12</span>
                   </div>
                 </div>
               </div>
@@ -263,7 +199,7 @@ export default function RecruiterDashboard() {
             </div>
 
             <div className="divide-y divide-gray-200">
-              {recentApplicants.map((applicant) => (
+              {recentApplicants.slice(0,3).map((applicant) => (
                 <div
                   key={applicant.id}
                   className="px-4 md:px-6 py-3 md:py-4 hover:bg-gray-50 transition-colors"
@@ -278,21 +214,15 @@ export default function RecruiterDashboard() {
                           {applicant.name}
                         </p>
                         <p className="text-xs text-gray-600 truncate">
-                          {applicant.appliedFor}
+                          {applicant.appliedJob}
                         </p>
                       </div>
                     </div>
 
                     <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 sm:flex-shrink-0">
                       <span className="text-xs text-gray-600 whitespace-nowrap">
-                        {applicant.appliedDate}
+                        {new Date(applicant.applied_at).toLocaleDateString()}
                       </span>
-                      <div className="flex gap-0.5">
-                        {getRatingStars(applicant.rating)}
-                      </div>
-                      <button className="px-3 py-2 text-xs font-semibold bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors whitespace-nowrap">
-                        Review
-                      </button>
                     </div>
                   </div>
                 </div>

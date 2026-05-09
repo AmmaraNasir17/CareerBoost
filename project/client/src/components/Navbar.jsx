@@ -5,9 +5,10 @@ export default function Navbar({ userName = 'User', userRole = 'Applier', onMenu
   const navigate = useNavigate()
   const [showProfile, setShowProfile] = useState(false)
 
+  const role = localStorage.getItem('role')
+
   const handleSettingsClick = () => {
-    const userRole = localStorage.getItem('role')
-    if (userRole === 'recruiter') {
+    if (role === 'recruiter') {
       navigate('/recruiter/settings')
     } else {
       navigate('/applier/settings')
@@ -15,10 +16,18 @@ export default function Navbar({ userName = 'User', userRole = 'Applier', onMenu
     setShowProfile(false)
   }
 
+  const handleProfileClick = () => {
+    if (role === 'applier') {
+      navigate('/applier/profile')
+    }
+    setShowProfile(false)
+  }
+
   return (
     <nav className="fixed top-0 left-0 right-0 z-40 bg-white border-b border-gray-200 h-16 shadow-sm">
       <div className="h-full px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4">
-        {/* Left Section - Logo & Hamburger */}
+
+        {/* Left Section */}
         <div className="flex items-center gap-3 min-w-0">
           <button
             onClick={onMenuClick}
@@ -41,7 +50,7 @@ export default function Navbar({ userName = 'User', userRole = 'Applier', onMenu
           </button>
         </div>
 
-        {/* Center Search - Hidden on mobile */}
+        {/* Center Search */}
         <div className="hidden md:flex flex-1 max-w-xs">
           <input
             type="text"
@@ -50,8 +59,9 @@ export default function Navbar({ userName = 'User', userRole = 'Applier', onMenu
           />
         </div>
 
-        {/* Right Section - Profile & Language */}
+        {/* Right Section */}
         <div className="flex items-center gap-2 md:gap-3 ml-auto flex-shrink-0">
+
           <div className="hidden sm:flex items-center gap-2 px-2 md:px-3 py-1.5 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">
             <div className="w-7 h-7 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-xs flex-shrink-0">
               {userName.charAt(0)}
@@ -70,31 +80,35 @@ export default function Navbar({ userName = 'User', userRole = 'Applier', onMenu
 
             {showProfile && (
               <div className="absolute right-0 mt-2 w-40 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
-                <button 
-                  onClick={() => {
-                    navigate('/profile')
-                    setShowProfile(false)
-                  }}
-                  className="block w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 border-b border-gray-100"
-                >
-                  Profile
-                </button>
-                <button 
+
+                {/* PROFILE ONLY FOR APPLIER */}
+                {role === 'applier' && (
+                  <button
+                    onClick={handleProfileClick}
+                    className="block w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 border-b border-gray-100"
+                  >
+                    Profile
+                  </button>
+                )}
+
+                <button
                   onClick={handleSettingsClick}
                   className="block w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 border-b border-gray-100"
                 >
                   Settings
                 </button>
+
                 <button
                   onClick={() => {
-                    localStorage.removeItem('token');
-                    localStorage.removeItem('role');
-                    navigate('/login');
+                    localStorage.removeItem('token')
+                    localStorage.removeItem('role')
+                    navigate('/login')
                   }}
                   className="block w-full text-left px-4 py-3 text-sm text-red-600 hover:bg-red-50"
                 >
                   Logout
                 </button>
+
               </div>
             )}
           </div>

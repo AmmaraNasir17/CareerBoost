@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { getUser } from "../../services/authService";
 import { getMyApplications } from "../../services/applicationService";
 import Navbar from "../../components/Navbar";
 import Sidebar from "../../components/Sidebar";
@@ -16,6 +17,7 @@ function getStatusColor(status) {
 
 export default function ApplierApplications() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [user, setUser] = useState(null);
   const [applicationsData, setApplicationsData] = useState([]);
   const [loading, setLoading] = useState(true);
   const token = localStorage.getItem("token");
@@ -32,6 +34,16 @@ export default function ApplierApplications() {
       }
     }
 
+    async function fetchUser() {
+      try {
+        const data = await getUser(token);
+        setUser(data);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    }
+
+    fetchUser();
     fetchApplications();
   }, []);
 
@@ -46,7 +58,7 @@ export default function ApplierApplications() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar
-        userName="Applier"
+        userName={user?.name}
         userRole="Applier"
         onMenuClick={() => setMobileMenuOpen(!mobileMenuOpen)}
       />

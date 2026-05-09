@@ -30,7 +30,6 @@ export default function Login() {
       // Set current user data
       localStorage.setItem('token', token)
       localStorage.setItem('role', role)
-      localStorage.setItem('userEmail', email)
 
       if (role === 'applier') {
         navigate('/applier')

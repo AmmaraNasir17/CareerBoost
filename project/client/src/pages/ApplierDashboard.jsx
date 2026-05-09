@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { getMyApplications } from "../services/applicationService";
+import { getUser } from "../services/authService";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
@@ -25,6 +26,7 @@ function getStatusColor(status) {
 
 export default function ApplierDashboard() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [user, setUser] = useState(null);
   const [applicationsData, setApplicationsData] = useState([]);
   const [loading, setLoading] = useState(true);
   const token = localStorage.getItem("token");
@@ -33,7 +35,7 @@ export default function ApplierDashboard() {
     async function fetchApplications() {
       try {
         const data = await getMyApplications(token);
-        setApplicationsData(data.slice(0, 3));
+        setApplicationsData(data);
       } catch (error) {
         console.error("Error fetching applications:", error);
       } finally {
@@ -41,13 +43,23 @@ export default function ApplierDashboard() {
       }
     }
 
+    async function fetchUser() {
+      try {
+        const userData = await getUser(token);
+        setUser(userData);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    }
+
+    fetchUser();
     fetchApplications();
   }, []);
   
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar
-        userName="Applier"
+        userName={user?.name}
         userRole="Applier"
         onMenuClick={() => setMobileMenuOpen(!mobileMenuOpen)}
       />
@@ -62,7 +74,7 @@ export default function ApplierDashboard() {
           {/* Welcome Section */}
           <div className="mb-6 md:mb-8">
             <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
-              Welcome back! 👋
+              Welcome {user?.name.split(' ')[0]} 👋
             </h1>
             <p className="text-sm md:text-base text-gray-600">
               Here's an overview of your job search progress
@@ -81,14 +93,14 @@ export default function ApplierDashboard() {
             <StatsCard
               icon={CheckCircleIcon}
               label="Shortlisted"
-              value="8"
+              value={applicationsData.filter(app => app.status === 'shortlisted').length}
               color="green"
               trend={{ positive: true, value: 8 }}
             />
             <StatsCard
               icon={XCircleIcon}
               label="Rejections"
-              value="3"
+              value={applicationsData.filter(app => app.status === 'rejected').length}
               color="red"
               trend={{ positive: false, value: 2 }}
             />
@@ -109,7 +121,7 @@ export default function ApplierDashboard() {
                 </div>
 
                 <div className="divide-y divide-gray-200">
-                  {applicationsData.map((app) => (
+                  {applicationsData.slice(0,3).map((app) => (
                     <div
                       key={app.id}
                       className="px-4 md:px-6 py-3 md:py-4 hover:bg-gray-50 transition-colors cursor-pointer"
@@ -141,35 +153,6 @@ export default function ApplierDashboard() {
 
             {/* Sidebar Cards */}
             <div className="space-y-4 md:space-y-6">
-              {/* Profile Strength */}
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="bg-blue-50 text-blue-600 p-2 md:p-3 rounded-lg flex-shrink-0">
-                    <DocumentIcon className="w-4 md:w-5 h-4 md:h-5" />
-                  </div>
-                  <h3 className="text-sm font-bold text-gray-900">
-                    Profile Strength
-                  </h3>
-                </div>
-                <div className="mb-4">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="text-xs font-medium text-gray-600">
-                      Completeness
-                    </span>
-                    <span className="text-sm font-bold text-gray-900">75%</span>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
-                    <div
-                      className="bg-blue-600 h-2 rounded-full transition-all"
-                      style={{ width: "75%" }}
-                    ></div>
-                  </div>
-                </div>
-                <button className="w-full px-4 py-2 bg-blue-600 text-white text-xs md:text-sm font-semibold rounded-lg hover:bg-blue-700 transition-colors">
-                  Improve Profile
-                </button>
-              </div>
-
               {/* Top Skills */}
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6">
                 <div className="flex items-center gap-3 mb-4">
