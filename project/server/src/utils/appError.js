@@ -1,7 +1,14 @@
-function createHttpError(message, status) {
-  const error = new Error(message);
-  error.status = status;
-  return error;
+class AppError extends Error {
+  constructor(message, status) {
+    super(message);
+    this.status = status;
+    this.isOperational = true;
+    Error.captureStackTrace(this, this.constructor);
+  }
 }
 
-module.exports = { createHttpError };
+const createHttpError = (message, status) => {
+  return new AppError(message, status);
+};
+
+module.exports = { AppError, createHttpError };
