@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const { verifyAuthToken } = require("../services/token.service");
 
 function getAuthTokenFromHeader(req) {
   const authHeader = req.headers.authorization;
@@ -8,26 +9,18 @@ function getAuthTokenFromHeader(req) {
   return authHeader.split(" ")[1];
 }
 
-function verifyToken(token) {
-  try {
-    return jwt.verify(token, process.env.JWT_SECRET);
-  } catch (err) {
-    return null;
-  }
-}
-
 module.exports = function (req, res, next) {
   const token = getAuthTokenFromHeader(req);
   if (!token) {
     return res.status(401).json({
-      message: "No token provided"
+      message: "No token provided",
     });
   }
 
-  const decoded = verifyToken(token);
+  const decoded = verifyAuthToken(token);
   if (!decoded) {
     return res.status(401).json({
-      message: "Invalid token"
+      message: "Invalid token",
     });
   }
 

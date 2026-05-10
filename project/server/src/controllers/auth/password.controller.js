@@ -1,6 +1,6 @@
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
-
+const { sendPasswordResetEmail } = require("../../services/email.service");
 const { createHttpError } = require("../../utils/appError");
 const {
   findUserByEmail,
@@ -31,8 +31,7 @@ exports.requestPasswordReset = async (req, res) => {
 
     await saveResetToken(user.id, token, expiresAt);
 
-    // TODO: plug in email.service.js here when ready
-    console.log(`Password reset token for ${email}: ${token}`);
+    await sendPasswordResetEmail(normalizedEmail, token);
 
     res.json({ message: "Password reset token generated", token });
   } catch (err) {
