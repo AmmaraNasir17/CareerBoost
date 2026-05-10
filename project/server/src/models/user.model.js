@@ -43,35 +43,10 @@ async function updateUserPassword(id, hashedPassword) {
   );
 }
 
-async function saveResetToken(id, token, expiresAt) {
-  await pool.query(
-    `UPDATE users SET reset_token = $1, reset_token_expires = $2 WHERE id = $3`,
-    [token, expiresAt, id]
-  );
-}
-
-async function findUserByResetToken(token) {
-  const result = await pool.query(
-    "SELECT * FROM users WHERE reset_token = $1",
-    [token]
-  );
-  return result.rows[0];
-}
-
-async function clearResetToken(id) {
-  await pool.query(
-    "UPDATE users SET reset_token = NULL, reset_token_expires = NULL WHERE id = $1",
-    [id]
-  );
-}
-
 module.exports = {
   createUser,
   findUserByEmail,
   findUserById,
   updateUserProfile,
-  updateUserPassword,
-  saveResetToken,
-  findUserByResetToken,
-  clearResetToken,
+  updateUserPassword
 };

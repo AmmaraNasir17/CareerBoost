@@ -55,7 +55,7 @@ async function createQuestion(quizId, fields) {
     `INSERT INTO quiz_questions (quiz_id, question_text, options, correct_answer, position)
      VALUES ($1, $2, $3, $4, $5)
      RETURNING *`,
-    [quizId, question_text, options, correct_answer, position]
+    [quizId, question_text, JSON.stringify(options), correct_answer, position]
   );
   return result.rows[0];
 }

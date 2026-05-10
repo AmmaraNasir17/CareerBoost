@@ -5,8 +5,6 @@ import RoleRoute from "./components/auth/RoleRoute";
 import LandingPage from "./pages/landing/LandingPage";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
-import ForgotPassword from "./pages/auth/ForgotPassword";
-import ResetPassword from "./pages/auth/ResetPassword";
 
 import ApplierDashboard from "./pages/applier/ApplierDashboard";
 import ApplierJobs from "./pages/applier/ApplierJobs";
@@ -37,8 +35,6 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/reset-password" element={<ResetPassword />} />
 
         <Route path="/applier" element={<RoleRoute role="applier"><ApplierDashboard /></RoleRoute>} />
         <Route path="/applier/jobs" element={<RoleRoute role="applier"><ApplierJobs /></RoleRoute>} />

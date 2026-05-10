@@ -1,7 +1,6 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { generateAuthToken } = require("../../services/token.service");
-const { sendWelcomeEmail } = require("../../services/email.service");
 const { createHttpError } = require("../../utils/appError");
 const { createUser, findUserByEmail } = require("../../models/user.model");
 
@@ -19,7 +18,6 @@ const verifyPassword = async (password, hashed) => {
   if (!isMatch) throw createHttpError("Invalid email or password", 401);
 };
 
-
 exports.register = async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
@@ -28,7 +26,7 @@ exports.register = async (req, res) => {
     const hashedPassword = await hashPassword(password);
     const user = await createUser(name, email.trim().toLowerCase(), hashedPassword, role);
 
-    await sendWelcomeEmail(user.email, user.name);
+    res.status(201).json({ message: "User created successfully", user });
   } catch (err) {
     console.error(err);
     if (err.status) return res.status(err.status).json({ message: err.message });

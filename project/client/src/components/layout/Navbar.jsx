@@ -1,38 +1,35 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import useAuth from "../../hooks/useAuth";
 
-export default function Navbar({ userName = 'User', userRole = 'Applier', onMenuClick = () => {} }) {
-  const navigate = useNavigate()
-  const [showProfile, setShowProfile] = useState(false)
-
-  const role = localStorage.getItem('role')
+export default function Navbar({ userName = "User", userRole = "Applier", onMenuClick = () => {} }) {
+  const navigate = useNavigate();
+  const { role, logout } = useAuth();
+  const [showProfile, setShowProfile] = useState(false);
 
   const handleSettingsClick = () => {
-    if (role === 'recruiter') {
-      navigate('/recruiter/settings')
-    } else {
-      navigate('/applier/settings')
-    }
-    setShowProfile(false)
-  }
+    navigate(role === "recruiter" ? "/recruiter/settings" : "/applier/settings");
+    setShowProfile(false);
+  };
 
   const handleProfileClick = () => {
-    if (role === 'applier') {
-      navigate('/applier/profile')
-    }
-    setShowProfile(false)
-  }
+    if (role === "applier") navigate("/applier/profile");
+    setShowProfile(false);
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-40 bg-white border-b border-gray-200 h-16 shadow-sm">
       <div className="h-full px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4">
 
-        {/* Left Section */}
         <div className="flex items-center gap-3 min-w-0">
           <button
             onClick={onMenuClick}
             className="md:hidden p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors flex-shrink-0"
-            title="Menu"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
@@ -40,7 +37,7 @@ export default function Navbar({ userName = 'User', userRole = 'Applier', onMenu
           </button>
 
           <button
-            onClick={() => navigate('/')}
+            onClick={() => navigate("/")}
             className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity flex-shrink-0"
           >
             <div className="w-9 h-9 bg-gradient-to-br from-blue-600 to-blue-700 rounded-lg flex items-center justify-center text-white font-bold text-sm">
@@ -50,7 +47,6 @@ export default function Navbar({ userName = 'User', userRole = 'Applier', onMenu
           </button>
         </div>
 
-        {/* Center Search */}
         <div className="hidden md:flex flex-1 max-w-xs">
           <input
             type="text"
@@ -59,9 +55,7 @@ export default function Navbar({ userName = 'User', userRole = 'Applier', onMenu
           />
         </div>
 
-        {/* Right Section */}
         <div className="flex items-center gap-2 md:gap-3 ml-auto flex-shrink-0">
-
           <div className="hidden sm:flex items-center gap-2 px-2 md:px-3 py-1.5 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">
             <div className="w-7 h-7 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-xs flex-shrink-0">
               {userName.charAt(0)}
@@ -75,14 +69,12 @@ export default function Navbar({ userName = 'User', userRole = 'Applier', onMenu
               onClick={() => setShowProfile(!showProfile)}
               className="px-2 md:px-3 py-1.5 text-xs md:text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors"
             >
-              {showProfile ? '✕' : '⋯'}
+              {showProfile ? "✕" : "⋯"}
             </button>
 
             {showProfile && (
               <div className="absolute right-0 mt-2 w-40 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
-
-                {/* PROFILE ONLY FOR APPLIER */}
-                {role === 'applier' && (
+                {role === "applier" && (
                   <button
                     onClick={handleProfileClick}
                     className="block w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 border-b border-gray-100"
@@ -90,30 +82,23 @@ export default function Navbar({ userName = 'User', userRole = 'Applier', onMenu
                     Profile
                   </button>
                 )}
-
                 <button
                   onClick={handleSettingsClick}
                   className="block w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 border-b border-gray-100"
                 >
                   Settings
                 </button>
-
                 <button
-                  onClick={() => {
-                    localStorage.removeItem('token')
-                    localStorage.removeItem('role')
-                    navigate('/login')
-                  }}
+                  onClick={handleLogout}
                   className="block w-full text-left px-4 py-3 text-sm text-red-600 hover:bg-red-50"
                 >
                   Logout
                 </button>
-
               </div>
             )}
           </div>
         </div>
       </div>
     </nav>
-  )
+  );
 }

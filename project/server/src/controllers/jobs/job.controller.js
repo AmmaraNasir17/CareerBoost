@@ -12,8 +12,8 @@ exports.getAllJobs = async (req, res) => {
   try {
     const filters = {
       location: req.query.location,
-      salary_min: req.query.salary_min,
-      salary_max: req.query.salary_max,
+      salary_min: req.query.salary_min ? parseInt(req.query.salary_min) : null,
+      salary_max: req.query.salary_max ? parseInt(req.query.salary_max) : null,
       job_type: req.query.job_type,
       experience_level: req.query.experience_level,
       search: req.query.search,

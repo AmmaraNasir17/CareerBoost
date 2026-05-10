@@ -6,11 +6,17 @@ async function createResume(userId, fields) {
     `INSERT INTO resumes (user_id, personal_info, education, experience, projects, skills)
      VALUES ($1, $2, $3, $4, $5, $6)
      RETURNING *`,
-    [userId, personal_info, education, experience, projects, skills]
+    [
+      userId,
+      personal_info ? JSON.stringify(personal_info) : null,
+      education ? JSON.stringify(education) : null,
+      experience ? JSON.stringify(experience) : null,
+      projects ? JSON.stringify(projects) : null,
+      skills || null,
+    ]
   );
   return result.rows[0];
 }
-
 async function findResumeByUserId(userId) {
   const result = await pool.query(
     `SELECT * FROM resumes WHERE user_id = $1`,
@@ -32,7 +38,14 @@ async function upsertResume(userId, fields) {
          skills = COALESCE($6, resumes.skills),
          updated_at = NOW()
      RETURNING *`,
-    [userId, personal_info, education, experience, projects, skills]
+    [
+      userId,
+      personal_info ? JSON.stringify(personal_info) : null,
+      education ? JSON.stringify(education) : null,
+      experience ? JSON.stringify(experience) : null,
+      projects ? JSON.stringify(projects) : null,
+      skills || null,
+    ]
   );
   return result.rows[0];
 }

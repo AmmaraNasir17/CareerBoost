@@ -49,7 +49,6 @@ export default function Login() {
           </div>
           <ErrorMessage message={error} />
           <div className="flex items-center justify-between pt-1">
-            <a href="/forgot-password" className="text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors">{t.forgotPassword}</a>
           </div>
           <button type="submit" disabled={loading} className="corporate-button mt-7">
             {loading ? <span className="flex items-center justify-center gap-2"><span className="w-4 h-4 border-2 border-transparent border-t-white border-r-white rounded-full animate-spin"></span>{t.signingIn}</span> : t.signInButton}
