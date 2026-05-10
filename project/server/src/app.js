@@ -8,6 +8,8 @@ const applicationRoutes = require("./routes/application.routes");
 const profileRoutes = require("./routes/profile.routes");
 const savedJobRoutes = require("./routes/savedJob.routes");
 const resumeRoutes = require("./routes/resume.routes");
+const quizRoutes = require("./routes/quiz.routes");
+const skillRoutes = require("./routes/skill.routes");
 
 const app = express();
 
@@ -23,6 +25,8 @@ app.use("/api/applications", applicationRoutes);
 app.use("/api/profile", profileRoutes);
 app.use("/api/saved-jobs", savedJobRoutes);
 app.use("/api/resume", resumeRoutes);
+app.use("/api/quizzes", quizRoutes);
+app.use("/api/skills", skillRoutes);
 
 app.get("/", (req, res) => {
   res.send("CareerBoost Server Running");
