@@ -10,6 +10,8 @@ const savedJobRoutes = require("./routes/savedJob.routes");
 const resumeRoutes = require("./routes/resume.routes");
 const quizRoutes = require("./routes/quiz.routes");
 const skillRoutes = require("./routes/skill.routes");
+const dashboardRoutes = require("./routes/dashboard.routes");
+const errorMiddleware = require("./middleware/error.middleware");
 
 const app = express();
 
@@ -27,10 +29,13 @@ app.use("/api/saved-jobs", savedJobRoutes);
 app.use("/api/resume", resumeRoutes);
 app.use("/api/quizzes", quizRoutes);
 app.use("/api/skills", skillRoutes);
+app.use("/api/dashboard", dashboardRoutes);
 
 app.get("/", (req, res) => {
   res.send("CareerBoost Server Running");
 });
+
+app.use(errorMiddleware);
 
 app.listen(5000, () => {
   console.log("Server running on port 5000");
