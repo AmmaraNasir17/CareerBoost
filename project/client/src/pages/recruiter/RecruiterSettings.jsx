@@ -1,243 +1,87 @@
-import { useState, useEffect } from "react";
-import { getUser } from "../../services/authService";
-import { useNavigate } from "react-router-dom";
-import Navbar from "../../components/Navbar";
-import Sidebar from "../../components/Sidebar";
+import { useState } from "react";
+import DashboardLayout from "../../components/layout/DashboardLayout";
+import PageWrapper from "../../components/layout/PageWrapper";
+import ErrorMessage from "../../components/common/ErrorMessage";
+import useAuth from "../../hooks/useAuth";
+import { changePassword, updateProfile } from "../../services/profileService";
 
 export default function RecruiterSettings() {
-  const navigate = useNavigate();
+  const { token, user, logout } = useAuth();
+  const [companyForm, setCompanyForm] = useState({ company_name: "", company_description: "" });
+  const [passwordForm, setPasswordForm] = useState({ currentPassword: "", newPassword: "" });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
-
-  const token = localStorage.getItem("token");
-
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-  });
-
-  const fetchUser = async () => {
+  const handleCompanySubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+    setSuccess("");
     try {
-      setLoading(true);
-
-      const data = await getUser(token);
-
-      setUser(data);
-
-      setFormData({
-        name: data.name || "",
-        email: data.email || "",
-      });
-
-      localStorage.setItem("userName", data.name);
-      localStorage.setItem("userEmail", data.email);
-
+      await updateProfile(token, companyForm);
+      setSuccess("Company info updated");
     } catch (err) {
-      console.error("FETCH USER ERROR:", err);
-      setErrorMessage(err.message || "Failed to load user data");
+      setError(err.message);
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => {
-    fetchUser();
-  }, []);
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-
-    setSuccessMessage("");
-    setErrorMessage("");
-  };
-
-  const handleSaveChanges = async (e) => {
+  const handlePasswordSubmit = async (e) => {
     e.preventDefault();
-
-    if (!formData.name.trim()) {
-      setErrorMessage("Name is required");
-      return;
-    }
-
-    if (!formData.email.trim()) {
-      setErrorMessage("Email is required");
-      return;
-    }
-
-    if (!formData.email.includes("@")) {
-      setErrorMessage("Please enter a valid email");
-      return;
-    }
-
+    setLoading(true);
+    setError("");
+    setSuccess("");
     try {
-      setSaving(true);
-      setErrorMessage("");
-      setSuccessMessage("");
-
-      localStorage.setItem("userName", formData.name.trim());
-      localStorage.setItem("userEmail", formData.email.trim());
-
-      setUser((prev) => ({
-        ...prev,
-        name: formData.name.trim(),
-        email: formData.email.trim(),
-      }));
-
-      setSuccessMessage("Profile updated successfully");
-
-      setTimeout(() => {
-        setSuccessMessage("");
-      }, 3000);
-
-    } catch (error) {
-      console.error("Error saving settings:", error);
-      setErrorMessage(error.message || "Failed to save settings");
-
+      await changePassword(token, passwordForm);
+      setSuccess("Password changed successfully");
+      setPasswordForm({ currentPassword: "", newPassword: "" });
+    } catch (err) {
+      setError(err.message);
     } finally {
-      setSaving(false);
+      setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Navbar
-        userName={formData.name || user?.name}
-        userRole="Recruiter"
-        onMenuClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-      />
-
-      <Sidebar
-        currentRole="recruiter"
-        isMobileOpen={mobileMenuOpen}
-        onClose={() => setMobileMenuOpen(false)}
-      />
-
-      <main className="md:ml-64 mt-16 px-4 sm:px-6 lg:px-8 py-6 md:py-8">
-        <div className="max-w-2xl mx-auto">
-
-          {/* Header */}
-          <div className="mb-8">
-            <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
-              Account Settings
-            </h1>
-            <p className="text-sm md:text-base text-gray-600">
-              Manage your profile information
-            </p>
-          </div>
-
-          {/* Card */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-            <div className="px-6 py-6 border-b border-gray-200">
-              <h2 className="text-lg font-semibold text-gray-900">
-                Personal Information
-              </h2>
+    <DashboardLayout>
+      <PageWrapper title="Settings">
+        <div className="max-w-lg space-y-6">
+          <form onSubmit={handleCompanySubmit} className="bg-white rounded-xl border border-gray-200 p-6 space-y-5">
+            <h3 className="text-base font-semibold text-gray-800">Company Info</h3>
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-700">Company Name</label>
+              <input type="text" value={companyForm.company_name} onChange={(e) => setCompanyForm({ ...companyForm, company_name: e.target.value })} className="corporate-input" />
             </div>
-
-            <div className="px-6 py-6">
-              {loading ? (
-                <div className="flex items-center justify-center py-12">
-                  <div className="flex flex-col items-center gap-3">
-                    <div className="w-12 h-12 border-4 border-gray-200 border-t-blue-600 rounded-full animate-spin"></div>
-                    <p className="text-gray-600 text-sm">
-                      Loading your settings...
-                    </p>
-                  </div>
-                </div>
-              ) : (
-                <form onSubmit={handleSaveChanges} className="space-y-6">
-
-                  {/* Success */}
-                  {successMessage && (
-                    <div className="bg-green-50 border border-green-300 rounded-lg p-4 text-sm text-green-800 font-medium">
-                      {successMessage}
-                    </div>
-                  )}
-
-                  {/* Error */}
-                  {errorMessage && (
-                    <div className="bg-red-50 border border-red-300 rounded-lg p-4 text-sm text-red-800 font-medium">
-                      {errorMessage}
-                    </div>
-                  )}
-
-                  {/* Name */}
-                  <div className="space-y-2">
-                    <label
-                      htmlFor="name"
-                      className="block text-sm font-medium text-gray-700"
-                    >
-                      Full Name
-                    </label>
-
-                    <input
-                      id="name"
-                      name="name"
-                      type="text"
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      disabled={saving}
-                      placeholder="Enter your full name"
-                      className="w-full px-4 py-2.5 rounded-lg border border-gray-300"
-                    />
-                  </div>
-
-                  {/* Email */}
-                  <div className="space-y-2">
-                    <label
-                      htmlFor="email"
-                      className="block text-sm font-medium text-gray-700"
-                    >
-                      Email Address
-                    </label>
-
-                    <input
-                      id="email"
-                      name="email"
-                      type="email"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      disabled={saving}
-                      placeholder="Enter your email"
-                      className="w-full px-4 py-2.5 rounded-lg border border-gray-300"
-                    />
-                  </div>
-
-                  {/* Buttons */}
-                  <div className="flex gap-3 pt-4">
-                    <button
-                      type="submit"
-                      disabled={loading || saving}
-                      className="px-6 py-2.5 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 disabled:bg-gray-400"
-                    >
-                      {saving ? "Saving..." : "Save Changes"}
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => navigate("/recruiter")}
-                      disabled={saving}
-                      className="px-6 py-2.5 bg-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-300"
-                    >
-                      Cancel
-                    </button>
-                  </div>
-
-                </form>
-              )}
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-700">Company Description</label>
+              <textarea value={companyForm.company_description} onChange={(e) => setCompanyForm({ ...companyForm, company_description: e.target.value })} className="corporate-input min-h-[80px]" />
             </div>
+            <ErrorMessage message={error} />
+            {success && <div className="bg-green-50 border border-green-300 rounded-lg p-3 text-sm text-green-700">{success}</div>}
+            <button type="submit" disabled={loading} className="corporate-button w-full">{loading ? "Saving..." : "Save"}</button>
+          </form>
+
+          <form onSubmit={handlePasswordSubmit} className="bg-white rounded-xl border border-gray-200 p-6 space-y-5">
+            <h3 className="text-base font-semibold text-gray-800">Change Password</h3>
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-700">Current Password</label>
+              <input type="password" value={passwordForm.currentPassword} onChange={(e) => setPasswordForm({ ...passwordForm, currentPassword: e.target.value })} required className="corporate-input" />
+            </div>
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-700">New Password</label>
+              <input type="password" value={passwordForm.newPassword} onChange={(e) => setPasswordForm({ ...passwordForm, newPassword: e.target.value })} required className="corporate-input" />
+            </div>
+            <button type="submit" disabled={loading} className="corporate-button w-full">{loading ? "Saving..." : "Update Password"}</button>
+          </form>
+
+          <div className="bg-white rounded-xl border border-gray-200 p-6">
+            <h3 className="text-base font-semibold text-gray-800 mb-3">Account</h3>
+            <button onClick={logout} className="corporate-secondary-button text-red-600 border-red-200 hover:bg-red-50 w-full">Sign Out</button>
           </div>
         </div>
-      </main>
-    </div>
+      </PageWrapper>
+    </DashboardLayout>
   );
 }

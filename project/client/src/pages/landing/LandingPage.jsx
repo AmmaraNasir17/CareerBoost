@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import translations from '../utils/translations.json'
+import translations from '../../utils/translations.json'
 
 
 export default function LandingPage() {

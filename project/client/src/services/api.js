@@ -1,10 +1,11 @@
 const API_BASE_URL = "http://localhost:5000/api";
 
-export async function apiRequest(endpoint, method = "GET", body = null, token = null) {
+export async function apiRequest(endpoint, method = "GET", body = null, token = null, isFormData = false) {
+  const headers = {};
 
-  const headers = {
-    "Content-Type": "application/json"
-  };
+  if (!isFormData) {
+    headers["Content-Type"] = "application/json";
+  }
 
   if (token) {
     headers["Authorization"] = `Bearer ${token}`;
@@ -13,7 +14,7 @@ export async function apiRequest(endpoint, method = "GET", body = null, token = 
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
     method,
     headers,
-    body: body ? JSON.stringify(body) : null
+    body: isFormData ? body : body ? JSON.stringify(body) : null,
   });
 
   let data = {};
@@ -21,6 +22,8 @@ export async function apiRequest(endpoint, method = "GET", body = null, token = 
 
   if (contentType.includes("application/json")) {
     data = await response.json();
+  } else if (contentType.includes("application/pdf")) {
+    return response;
   } else {
     const text = await response.text();
     data = { message: text };

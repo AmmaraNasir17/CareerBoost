@@ -1,16 +1,7 @@
 import { apiRequest } from "./api";
 
-// get my applications (applier)
-export const getMyApplications = (token) => {
-  return apiRequest("/applications/my-applications", "GET", null, token);
-};
-
-// get applicants for a job (recruiter)
-export const getApplicants = (token) => {
-  return apiRequest("/applications/my-applicants", "GET", null, token);
-};
-
-// update application status (recruiter)
-export const updateApplicationStatus = (applicationId, status, token) => {
-  return apiRequest(`/applications/${applicationId}/status`, "PUT", { status }, token);
-};
+export const applyToJob = (token, jobId) => apiRequest(`/jobs/${jobId}/apply`, "POST", null, token);
+export const getMyApplications = (token) => apiRequest("/applications/my", "GET", null, token);
+export const getAllApplicants = (token) => apiRequest("/applications/all", "GET", null, token);
+export const getApplicantsForJob = (token, jobId) => apiRequest(`/jobs/${jobId}/applicants`, "GET", null, token);
+export const updateApplicationStatus = (token, id, status) => apiRequest(`/applications/${id}/status`, "PATCH", { status }, token);
