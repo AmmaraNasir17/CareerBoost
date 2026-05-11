@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import PageWrapper from "../../components/layout/PageWrapper";
 import QuizCard from "../../components/skills/QuizCard";
@@ -8,12 +9,24 @@ import useQuiz from "../../hooks/useQuiz";
 import { DIFFICULTY_VARIANTS } from "../../utils/constants";
 
 export default function QuizList() {
+  const navigate = useNavigate();
   const [filters, setFilters] = useState({});
   const { quizzes, loading, error, getBestScore } = useQuiz(filters);
 
   return (
     <DashboardLayout>
-      <PageWrapper title="Skill Quizzes" description="Test and improve your knowledge">
+      <PageWrapper
+        title="Skill Quizzes"
+        description="Test and improve your knowledge"
+        action={
+          <button
+            onClick={() => navigate("/quizzes/create")}
+            className="corporate-button text-sm py-2 px-4"
+          >
+            + Create Quiz
+          </button>
+        }
+      >
         <div className="flex gap-4 mb-4">
           <input
             type="text"
@@ -34,7 +47,15 @@ export default function QuizList() {
 
         {loading ? <Spinner /> : error ? <p className="text-sm text-red-500">{error}</p> :
           quizzes.length === 0 ? (
-            <EmptyState title="No quizzes available" description="Check back later for new quizzes" />
+            <EmptyState
+              title="No quizzes available"
+              description="Be the first to create one"
+              action={
+                <button onClick={() => navigate("/quizzes/create")} className="corporate-button text-sm">
+                  Create Quiz
+                </button>
+              }
+            />
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {quizzes.map((quiz) => (
