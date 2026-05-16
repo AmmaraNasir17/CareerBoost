@@ -1,3 +1,8 @@
 node_modules
 .env
 uploads
+# Test coverage
+coverage/
+.nyc_output/
+dist/
+build/
